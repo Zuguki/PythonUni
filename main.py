@@ -13,6 +13,7 @@ from datetime import datetime
 from jinja2 import Environment, FileSystemLoader
 
 
+# Main change
 class Currency(Enum):
     AZN = "Манаты"
     BYR = "Белорусские рубли"
