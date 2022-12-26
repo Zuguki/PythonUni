@@ -343,9 +343,14 @@ true_false_reverse = {
 if __name__ == '__main__':
     years_salary, years_count, years_salary_vacancy, years_count_vacancy, area_salary, area_count, vacancy_name \
         = InputConnect.connect()
-    Report.generate_excel(years_salary, years_count, years_salary_vacancy, years_count_vacancy, area_salary,
-                          area_count, vacancy_name)
-    Report.generate_image(years_salary, years_count, years_salary_vacancy, years_count_vacancy, area_salary,
-                          area_count, vacancy_name)
-    Report.generate_pdf(years_salary, years_count, years_salary_vacancy, years_count_vacancy, area_salary,
-                          area_count, vacancy_name)
+    choice = input("Вакансии или статистика?").strip().lower()
+    if choice == "вакансии":
+        Report.generate_excel(years_salary, years_count, years_salary_vacancy, years_count_vacancy, area_salary,
+                              area_count, vacancy_name)
+        Report.generate_image(years_salary, years_count, years_salary_vacancy, years_count_vacancy, area_salary,
+                              area_count, vacancy_name)
+        Report.generate_pdf(years_salary, years_count, years_salary_vacancy, years_count_vacancy, area_salary,
+                            area_count, vacancy_name)
+    else:
+        Report.generate_excel(years_salary, years_count, years_salary_vacancy, years_count_vacancy, area_salary,
+                              area_count, vacancy_name)
