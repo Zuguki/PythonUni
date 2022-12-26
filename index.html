@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report</title>
+    <style>
+
+        table {
+            width: 100%;
+            margin: 0;
+            table-layout: fixed;
+            border-collapse: collapse;
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+
+        .main_title {
+            text-align: center;
+            font-size: 50px;
+        }
+
+        th,
+        td {
+            padding: 5px;
+            border: 1px solid black;
+            text-align: center;
+        }
+
+        th {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        td {
+            text-align: center;
+        }
+
+        .year-table th:nth-child(1) {
+            width: 5%;
+
+        }
+
+        .year-table th:nth-child(2) {
+            width: 20%;
+        }
+
+        .year-table th:nth-child(3) {
+            width: 25%;
+        }
+
+        .year-table th:nth-child(4) {
+            width: 20%;
+        }
+
+        .year-table th:nth-child(5) {
+            width: 30%;
+        }
+
+
+        .column {
+            box-sizing: border-box;
+            float: left;
+            width: 50%;
+            padding: 0 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 class="main_title">Аналитика по зарплатам и городам для профессии {{ vacancy_name }}</h1>
+    <img src="file:///C:/graph.png" alt="">
+    <h2 style="text-align: center;">Статистика по годам</h2>
+    <table class="year-table">
+        <tr>
+            <th>{{header_year[0]}}</th>
+            <th>{{header_year[1]}}</th>
+            <th>{{header_year[2]}}</th>
+            <th>{{header_year[3]}}</th>
+            <th>{{header_year[4]}}</th>
+        </tr>
+        {% for key, value in years_salary.items() %}
+        <tr>
+            <td>{{key}}</td>
+            <td>{{value}}</td>
+            <td>{{years_salary_vacancy[key]}}</td>
+            <td>{{years_count[key]}}</td>
+            <td>{{years_count_vacancy[key]}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2 style="text-align: center;">Статистика по городам</h2>
+    <div class="container">
+        <div class="column">
+            <table>
+                <tr>
+                    <th>{{header_city[0]}}</th>
+                    <th>{{header_city[1]}}</th>
+                </tr>
+                {% for key, value in area_salary.items() %}
+                <tr>
+                    <td>{{key}}</td>
+                    <td>{{value}}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        <div class="column">
+            <table>
+                <tr>
+                    <th>{{header_city[2]}}</th>
+                    <th>{{header_city[3]}}</th>
+                </tr>
+                {% for key, value in area_count.items() %}
+                <tr>
+                    <td>{{key}}</td>
+                    <td>{{value}}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+
+</body>
+</html>
