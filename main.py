@@ -13,7 +13,7 @@ from datetime import datetime
 from jinja2 import Environment, FileSystemLoader
 
 
-# Main change
+"""Enum с полным название валюты"""
 class Currency(Enum):
     AZN = "Манаты"
     BYR = "Белорусские рубли"
@@ -27,6 +27,7 @@ class Currency(Enum):
     UZS = "Узбекский сум"
 
 
+"""Enum с текстовым обозначением опыта работы"""
 class Experience(Enum):
     noExperience = "Нет опыта"
     between1And3 = "От 1 года до 3 лет"
@@ -34,6 +35,7 @@ class Experience(Enum):
     moreThan6 = "Более 6 лет"
 
 
+"""Enum с названиями колонок"""
 class ColumnName(Enum):
     name = "Название"
     description = "Описание"
@@ -49,6 +51,7 @@ class ColumnName(Enum):
     published_at = "Дата публикации вакансии"
 
 
+"""Enum с значением конвертации валюты к рублю"""
 class CurrencyToRub(Enum):
     AZN = 35.68
     BYR = 23.91
@@ -63,17 +66,41 @@ class CurrencyToRub(Enum):
 
 
 class Salary:
+    """Класс для представления зарплат
+        Attributes:
+            salary_from (int): Нижняя граница оклада
+            salary_to (int): Верхняя граница оклада
+            salary_currency (int): Валюта оклада
+    """
     def __init__(self, salary_from, salary_to, salary_currency):
+        """
+        :param (str) salary_from:
+        :param (str) salary_to:
+        :param (str) salary_currency:
+        """
         self.salary_from = salary_from
         self.salary_to = salary_to
         self.salary_currency = salary_currency
 
     def get_salary_in_rub(self):
+        """
+        Конвертирует зп в рубли
+        :return: (float) Зарплата в рублях
+        """
         return ((int(float(self.salary_from)) + int(float(self.salary_to))) / 2) \
                * CurrencyToRub[self.salary_currency].value
 
 
 class Vacancy:
+    """
+    Классовое представление вакансии
+
+    Attributes:
+        name (str): Имя вакансии
+        salary (str): Зарплата
+        area_name (str): Название области
+        published_at (str): Вребя публикации вакансии
+    """
     def __init__(self, name, salary, area_name, published_at):
         self.name = name
         self.salary = salary
@@ -82,8 +109,21 @@ class Vacancy:
 
 
 class InputConnect:
+    """
+    Класс для обработки даннх
+    """
     @staticmethod
     def connect():
+        """
+        Метод получения запрашиваемых данных
+        :return:
+            (int[]) years_salary: годовые зарплата
+            (int[]) years_count: количество лет
+            (int[]) years_salary_vacancy: зарплаты по выбранной вакансии
+            (int[]) years_count_vacancy: количество выбранной вакансии по годам
+            (int[]) area_salary: средняя зарплата
+            (int[]) area_count: общее количество зп
+        """
         file_name = input('Введите название файла: ')
         vac_name = input('Введите название профессии: ')
         years_salary, years_count, years_salary_vacancy, years_count_vacancy, area_salary, area_count \
@@ -94,6 +134,18 @@ class InputConnect:
 
     @staticmethod
     def get_data_for_table(dataset, vac_name):
+        """
+        Метод получения данных из таблицы
+        :param dataset: датасет по имени файла
+        :param vac_name: название нужнуй вакансии
+        :return:
+            (int[]) years_salary: годовые зарплата
+            (int[]) years_count: количество лет
+            (int[]) years_salary_vacancy: зарплаты по выбранной вакансии
+            (int[]) years_count_vacancy: количество выбранной вакансии по годам
+            (int[]) area_salary: средняя зарплата
+            (int[]) area_count: общее количество зп
+        """
         vacancies = dataset.vacancies_objects
         years = set()
         for item in vacancies:
@@ -141,6 +193,15 @@ class InputConnect:
     @staticmethod
     def show_data(years_salary: dict, years_count: dict, years_salary_vacancy: dict, years_count_vacancy: dict,
                   area_salary: dict, area_count: dict):
+        """
+        Метод вывода данных на консоль
+        :param (dict) years_salary: годовые зарплата
+        :param (dict) years_count: количество лет
+        :param (dict) years_salary_vacancy: зарплаты по выбранной вакансии
+        :param (dict) years_count_vacancy: количество выбранной вакансии по годам
+        :param (dict) area_salary: средняя зарплата
+        :param (dict) area_count: общее количество зп
+        """
         print(f"Динамика уровня зарплат по годам: {years_salary}")
         print(f"Динамика количества вакансий по годам: {years_count}")
         print(f"Динамика уровня зарплат по годам для выбранной профессии: {years_salary_vacancy}")
@@ -150,9 +211,22 @@ class InputConnect:
 
 
 class Report:
+    """
+    Класс создания нужного репорта
+    """
     @staticmethod
     def generate_excel(years_salary: dict, years_count: dict, years_salary_vacancy: dict,
                        years_count_vacancy: dict, area_salary: dict, area_count: dict, vacancy_name: str):
+        """
+        Метод создания excel выборки
+        :param (dict) years_salary: годовые зарплата
+        :param (dict) years_count: количество лет
+        :param (dict) years_salary_vacancy: зарплаты по выбранной вакансии
+        :param (dict) years_count_vacancy: количество выбранной вакансии по годам
+        :param (dict) area_salary: средняя зарплата
+        :param (dict) area_count: общее количество зп
+        :param (str) vacancy_name: название требуемой вакансии
+        """
         wb = Workbook()
         del wb["Sheet"]
         sheet = wb.create_sheet("Статистика по годам")
@@ -199,6 +273,16 @@ class Report:
     @staticmethod
     def generate_image(years_salary: dict, years_count: dict, years_salary_vacancy: dict,
                        years_count_vacancy: dict, area_salary: dict, area_count: dict, vacancy_name: str):
+        """
+        Метод генерации изображения по данным
+        :param (dict) years_salary: годовые зарплата
+        :param (dict) years_count: количество лет
+        :param (dict) years_salary_vacancy: зарплаты по выбранной вакансии
+        :param (dict) years_count_vacancy: количество выбранной вакансии по годам
+        :param (dict) area_salary: средняя зарплата
+        :param (dict) area_count: общее количество зп
+        :param (str) vacancy_name: название требуемой вакансии
+        """
         width_const = 0.4
         _, work_item = plt.subplots(2, 2)
         X_axis = np.arange(len(years_salary.keys()))
@@ -231,6 +315,16 @@ class Report:
     @staticmethod
     def generate_pdf(years_salary: dict, years_count: dict, years_salary_vacancy: dict,
                        years_count_vacancy: dict, area_salary: dict, area_count: dict, vacancy_name: str):
+        """
+        Метод генерации pdf по выборке
+        :param (dict) years_salary: годовые зарплата
+        :param (dict) years_count: количество лет
+        :param (dict) years_salary_vacancy: зарплаты по выбранной вакансии
+        :param (dict) years_count_vacancy: количество выбранной вакансии по годам
+        :param (dict) area_salary: средняя зарплата
+        :param (dict) area_count: общее количество зп
+        :param (str) vacancy_name: название требуемой вакансии
+        """
         area_count = {x[0]: str(f'{x[1] * 100:,.2f}%').replace('.', ',') for x in area_count.items()}
 
         image_file = "graph.png"
@@ -251,6 +345,18 @@ class Report:
 
     @staticmethod
     def set_graphic(item, X_axis, width_const, label1, label2, item_bar1, item_bar2, title):
+        """
+        Метод настройи графики
+        :param item: окно
+        :param X_axis: отступ по X
+        :param width_const: ширина изображения
+        :param label1: контент1
+        :param label2: контент2
+        :param item_bar1: окно контента 1
+        :param item_bar2: окно контента 2
+        :param title: заголовок
+        :return: окно
+        """
         item.bar(X_axis - width_const / 2, item_bar1.values(), width=width_const, label=label1)
         item.bar(X_axis + width_const / 2, item_bar2.values(), width=width_const, label=label2)
         item.set_xticks(X_axis, item_bar1.keys())
@@ -264,34 +370,68 @@ class Report:
 
     @staticmethod
     def set_bold_font(sheet, *cells):
+        """
+        Метод установки жирного шрифта
+        :param sheet: холст
+        :param cells: ячейки
+        :return: холст
+        """
         for cell in cells:
             sheet[cell].font = Font(bold=True)
         return sheet
 
     @staticmethod
     def set_value_in_cell(sheet, cell: str, value: str, side_thin: Side):
+        """
+        Метод установки значения в холст
+        :param sheet: холст
+        :param cell: ячейка
+        :param value: значение
+        :param side_thin: сторона
+        :return:
+        """
         sheet[cell] = value
         sheet[cell].border = Border(top=side_thin, left=side_thin, right=side_thin, bottom=side_thin)
         return sheet
 
     @staticmethod
     def try_parse(item) -> str:
+        """
+        Метод проверки строки на None
+        :param item (str): строка проверки
+        :return: сконвертировання строка
+        """
         if item is None:
             return ""
         return str(item)
 
 
 class DataSet:
+    """
+    Класс структурирования данных
+
+    :argument (str): file_name: Название файла
+    :argument (dict): vacancies_objects: Обект с паршенными данными
+    """
     def __init__(self, file_name):
         self.file_name = file_name
         self.vacancies_objects = DataSet.parser_csv(file_name)
 
     @staticmethod
     def clear_str(str_value):
+        """
+        Метод очищения строки от html
+        :param (str): str_value строка для очистки
+        :return: очищенная строка
+        """
         return ' '.join(re.sub(r"<[^>]+>", '', str_value).split())
 
     @staticmethod
     def csv_reader(file_name):
+        """
+        Метод чтения строк из csv
+        :param file_name: названия файла
+        """
         file = open(file_name, encoding='utf_8_sig')
         reader = [row for row in csv.reader(file)]
         try:
@@ -303,6 +443,11 @@ class DataSet:
 
     @staticmethod
     def parser_csv(file_name):
+        """
+        Метод парсинга строки
+        :param (str) file_name: название файла
+        :return: распаршенный объект
+        """
         naming, reader = DataSet.csv_reader(file_name)
         dict_vacancies = []
         filtered_vacancies = [item for item in reader if len(item) == len(naming) and '' not in item]
@@ -321,6 +466,11 @@ class DataSet:
 
 
 def get_experience_id(value: str):
+    """
+    Метод получения id от опыта работы
+    :param (str) value: опыт работы
+    :return: id от опыта работы
+    """
     if Experience[value] == Experience.noExperience:
         return 1
     elif Experience[value] == Experience.between1And3:
